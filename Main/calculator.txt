@@ -1,0 +1,128 @@
+::~nc
+
+` Loop start
+
+$@ a What operation do you want to perform? 
+
++ b +
++ b -
++ b *
++ b /
+
+$. b 0
+* = a b #~ 29
+$. b 1
+* = a b #~ 55
+$. b 2
+* = a b #~ 81
+$. b 3
+* = a b #~ 107
+
+#~ 3
+
+
+
+
+
+
+
+' Handle addition
+
+- a
+
+$@ a First number: 
+
+$@ b Second number: 
+
+:+ c a b
+
+- a r
+- b r
+
+$+ a c
+
+$. a 0
+
+@ a
+
+- a
+
+#~ 3
+
+
+
+
+' Handle subtraction
+
+- a
+
+$@ a First number: 
+
+$@ b Second number: 
+
+:- c a b
+
+- a r
+- b r
+
+$+ a c
+
+$. a 0
+
+@ a
+
+- a
+
+#~ 15
+
+
+
+
+' Handle multiplication
+
+- a
+
+$@ a First number: 
+
+$@ b Second number: 
+
+:* c a b
+
+- a r
+- b r
+
+$+ a c
+
+$. a 0
+
+@ a
+
+- a
+
+#~ 3
+
+
+
+
+' Handle division
+
+- a
+
+$@ a First number: 
+
+$@ b Second number: 
+
+:/ c a b
+
+- a r
+- b r
+
+$+ a c
+
+$. a 0
+
+@ a
+
+- a
+
+#~ 3

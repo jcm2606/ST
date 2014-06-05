@@ -1,0 +1,13 @@
++ : Stack
+
+$ : Register
+
+@ : Console
+
+: : Maths
+
+# : Script
+
+& : File and Folder
+
+* : Conditional IF statement

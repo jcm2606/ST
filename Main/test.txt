@@ -1,0 +1,7 @@
+::~nc
+
+F $ a helloworld.txt
+
+L S a @ z
+
+- a

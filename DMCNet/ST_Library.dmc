@@ -1,0 +1,5 @@
+map InclusionArguments get 0 ST_ScriptFile
+
+system.comIn call st\st_interpreter.bat %ST_ScriptFile%
+
+##print This is a hidden easter egg
