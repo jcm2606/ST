@@ -14,11 +14,14 @@ if "%1"=="" (
 	echo ERROR: ST requires you to pass a script file as a parameter.
 	echo        For example, "st_interpreter test_script.txt".
 	
-	pause
 	exit /b
 )
 
 set ST_SCRIPT=%1
+
+set title=ST - Script: %ST_SCRIPT%
+
+title !title!
 
 if not "%~2"=="" (
 	for %%a in (%~2) do (
@@ -31,6 +34,10 @@ set mode_nocomment=false
 echo.
 
 for /F "tokens=1* delims=]" %%a in ('type "%ST_SCRIPT%" ^| find /V /N ""') do (
+	set title=ST - Script: %ST_SCRIPT% - Building script stack
+
+	title !title!
+
 	if "%%b"=="" (
 		call :add "Stack_x", "NULL_LINE"
 	) else (
@@ -44,6 +51,10 @@ set /a line=-1
 set /a line+=1
 
 for /f "tokens=1* eol=` delims= " %%a in ("!Stack_x[%line%]!") do (
+	set title=ST - Script: %ST_SCRIPT% - Line: !line!
+
+	title !title!
+
 	set command=%%a
 	set start=!command:~0,2!
 	set command=!command:~2!
@@ -55,14 +66,34 @@ for /f "tokens=1* eol=` delims= " %%a in ("!Stack_x[%line%]!") do (
 			exit /b
 		)
 	
-		call :commandHandling "!command!", "%%b"
+		if "!command!"=="{" (
+			set codeblock=true
+		)
+		
+		if "!command!"=="}" (
+			set "codeblock="
+		)
+		
+		if not defined codeblock (
+			call :commandHandling "!command!", "%%b"
+		)
 	) else (
 		if !start!==:: (
 			if /i !command!==~ext (
 				exit /b
 			)
 		
-			call :commandHandling "!command!", "%%b"
+			if "!command!"=="{" (
+				set codeblock=true
+			)
+			
+			if "!command!"=="}" (
+				set "codeblock="
+			)
+			
+			if not defined codeblock (
+				call :commandHandling "!command!", "%%b"
+			)
 		)
 		
 		if !start!==## (
@@ -70,7 +101,17 @@ for /f "tokens=1* eol=` delims= " %%a in ("!Stack_x[%line%]!") do (
 				exit /b
 			)
 		
-			call :commandHandling "!command!", "%%b"
+			if "!command!"=="{" (
+				set codeblock=true
+			)
+			
+			if "!command!"=="}" (
+				set "codeblock="
+			)
+			
+			if not defined codeblock (
+				call :commandHandling "!command!", "%%b"
+			)
 		)
 		
 		if !start!==// (
@@ -78,12 +119,26 @@ for /f "tokens=1* eol=` delims= " %%a in ("!Stack_x[%line%]!") do (
 				exit /b
 			)
 		
-			call :commandHandling "!command!", "%%b"
+			if "!command!"=="{" (
+				set codeblock=true
+			)
+			
+			if "!command!"=="}" (
+				set "codeblock="
+			)
+			
+			if not defined codeblock (
+				call :commandHandling "!command!", "%%b"
+			)
 		)
 	)
 )
 
 if !line! GEQ !Stack_x.length! (
+	set title=ST - Script: %ST_SCRIPT% - Line: !line! - Ended
+
+	title !title!
+
 	exit /b
 ) else (
 	goto :readStackX
@@ -424,6 +479,10 @@ if %cmd%==* (
 			set v1=true
 		)
 		
+		if /i %%d==z (
+			set v1=true
+		)
+		
 		if /i %%e==a (
 			set v2=true
 		)
@@ -433,6 +492,10 @@ if %cmd%==* (
 		)
 		
 		if /i %%e==c (
+			set v2=true
+		)
+		
+		if /i %%e==z (
 			set v2=true
 		)
 		
@@ -622,14 +685,20 @@ if "%cmd%"=="F" (
 REM Loop instructions
 
 if %cmd%==L (
-	for /f "tokens=1,2,3* delims= " %%c in ("%data%") do (
+	for /f "tokens=1,2,3,4 delims= " %%c in ("%data%") do (
 		if %%c==S (
 			for /l %%n in (0, 1, !Stack_%%d.length!) do (
 				if not "!Stack_%%d[%%n]!"=="" (
 					set "R_z=!Stack_%%d[%%n]!"
 					
-					call :commandHandling "%%e", "%%f"
+					call :loop
 				)
+			)
+		)
+		
+		if %%c==N (
+			for /l %%n in (%%d, %%e, %%f) do (
+				call :loop
 			)
 		)
 	)
@@ -652,6 +721,29 @@ set "valid="
 goto:EOF
 
 
+
+:loop
+for /l %%m in (!line!, 1, !Stack_x.length!) do (
+	set code=!Stack_x[%%m]!
+
+	if "!code!"=="}" (
+		set "blockmode="
+		
+		goto:EOF
+	)
+
+	if "!code!"=="{" (
+		set blockmode=true
+	)
+
+	if defined blockmode (
+		for /f "tokens=1* delims= " %%o in ("!code!") do (
+			call :commandHandling "%%o", "%%p"
+		)
+	)
+)
+
+goto:EOF
 
 
 
