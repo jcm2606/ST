@@ -12,7 +12,10 @@ REM ST will recognise "::" or "#" and then take that line as a command, else it 
 
 if "%1"=="" (
 	echo ERROR: ST requires you to pass a script file as a parameter.
-	echo        For example, "st_interpreter test_script.txt".
+	echo        For example, "st test_script.txt".
+	
+	for %%x in (%cmdcmdline%) do if /i "%%~x"=="/c" set DOUBLECLICKED=1
+	if defined DOUBLECLICKED pause
 	
 	exit /b
 )
@@ -686,7 +689,7 @@ REM Loop instructions
 
 if %cmd%==L (
 	for /f "tokens=1,2,3,4 delims= " %%c in ("%data%") do (
-		if %%c==S (
+		if /i %%c==S (
 			for /l %%n in (0, 1, !Stack_%%d.length!) do (
 				if not "!Stack_%%d[%%n]!"=="" (
 					set "R_z=!Stack_%%d[%%n]!"
@@ -696,8 +699,22 @@ if %cmd%==L (
 			)
 		)
 		
-		if %%c==N (
+		if /i %%c==N (
 			for /l %%n in (%%d, %%e, %%f) do (
+				call :loop
+			)
+		)
+		
+		if /i %%c==W (
+			if "%%e"=="_" (
+				set "delim= "
+			) else (
+				set delim=%%e
+			)
+		
+			for /f "tokens=%%d delims=!delim!" %%a in ("!R_%%f!") do (
+				
+			
 				call :loop
 			)
 		)
