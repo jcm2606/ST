@@ -687,7 +687,7 @@ if "%cmd%"=="F" (
 
 REM Loop instructions
 
-if %cmd%==L (
+if /i %cmd%==L (
 	for /f "tokens=1,2,3,4 delims= " %%c in ("%data%") do (
 		if /i %%c==S (
 			for /l %%n in (0, 1, !Stack_%%d.length!) do (
@@ -711,11 +711,15 @@ if %cmd%==L (
 			) else (
 				set delim=%%e
 			)
-		
-			for /f "tokens=%%d delims=!delim!" %%a in ("!R_%%f!") do (
-				
 			
-				call :loop
+			for /f "tokens=1,2 delims=," %%A in ("!R_%%f!") do (
+				for %%n in (A B C D E F G H I J K L M N O P Q R S T U V W X Y Z) do (
+					set char=%%n
+					set "val=^%%^%char%"
+					echo %%A !val!
+					
+					set "char="
+				)
 			)
 		)
 	)
