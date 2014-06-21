@@ -53,7 +53,7 @@ set /a line=-1
 :readStackX
 set /a line+=1
 
-for /f "tokens=1* eol=` delims= " %%a in ("!Stack_x[%line%]!") do (
+for /f "tokens=1* eol=' delims= " %%a in ("!Stack_x[%line%]!") do (
 	set title=ST - Script: %ST_SCRIPT% - Line: !line!
 
 	title !title!
@@ -138,6 +138,8 @@ for /f "tokens=1* eol=` delims= " %%a in ("!Stack_x[%line%]!") do (
 )
 
 if !line! GEQ !Stack_x.length! (
+	call :clear "Stack_x"
+
 	set title=ST - Script: %ST_SCRIPT% - Line: !line! - Ended
 
 	title !title!
@@ -374,6 +376,30 @@ if "%cmd%"=="$@" (
 	)
 )
 
+if "%cmd%"=="$$" (
+	for /f "tokens=1,2 delims= " %%c in ("%data%") do (
+		if /i %%c==a (
+			set valid=true
+		)
+		
+		if /i %%c==b (
+			set valid=true
+		)
+		
+		if /i %%c==c (
+			set valid=true
+		)
+	
+		if defined valid (
+			set R_%%c=!R_%%d!
+			
+			if !mode_debug!==true (
+				echo Pushed data from stack '%%e' in index '%%d' to register '%%c'
+			)
+		)
+	)
+)
+
 if "%cmd%"=="$." (
 	for /f "tokens=1,2,3 delims= " %%c in ("%data%") do (
 		if "%%e"=="" (
@@ -470,6 +496,14 @@ REM Conditional IF instructions
 
 if %cmd%==* (
 	for /f "tokens=1,2,3* delims= " %%c in ("%data%") do (
+		if /i "%%c"=="$*" (
+			set v2=true
+		)
+		
+		if /i "%%c"=="$/*" (
+			set v2=true
+		)
+	
 		if /i %%d==a (
 			set v1=true
 		)
@@ -524,6 +558,22 @@ if %cmd%==* (
 			
 			if "!cond!"=="/=" (
 				if not !R_%%d!==!R_%%e! (
+					for /f "tokens=1* delims= " %%n in ("%%f") do (
+						call :commandHandling "%%n", "%%o"
+					)
+				)
+			)
+			
+			if "!cond!"=="$*" (
+				if not "!R_%%d!"=="" (
+					for /f "tokens=1* delims= " %%n in ("%%f") do (
+						call :commandHandling "%%n", "%%o"
+					)
+				)
+			)
+			
+			if "!cond!"=="$/*" (
+				if "!R_%%d!"=="" (
 					for /f "tokens=1* delims= " %%n in ("%%f") do (
 						call :commandHandling "%%n", "%%o"
 					)
