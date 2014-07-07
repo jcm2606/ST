@@ -1,0 +1,59 @@
+::~nc
+
++ a !RANDOM!
+
+#~ 7
+
+~ext
+
+' Loop line marker
+
+'~dbg
+
+$@ a Guess a number: 
+
+$+ b a
+
+- a r
+
+$. a 0
+$. b 0
+
++ c Y
++ c o
++ c u
++ c _
++ c g
++ c u
++ c e
++ c s
++ c s
++ c e
++ c d
++ c :
++ c _
+
+$+ c b
+
++. c b
+
+- c
+
++.. b c
+
++- c 0
+
+- b
+
+$. c 0
+
+@ c
+
+* = a b @ b
+* = a b #~ 4
+
+- b
+
+- c
+
+#~ 9

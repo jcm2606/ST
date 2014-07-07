@@ -1,0 +1,27 @@
+::~nc
+
++ a H
++ a e
++ a l
++ a l
++ a o
++ a _
++ a W
++ a o
++ a r
++ a l
++ a d
+
++. a b
+
+- a
+
++.. b a
+
+- b
+
+$. a 0
+
+- a
+
+@ a
